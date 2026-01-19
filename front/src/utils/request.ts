@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import router from '../router' // 引入路由实例，用于跳转
+// import router from '../router'
 
 // 1. 创建 axios 实例
 const service = axios.create({
@@ -40,12 +40,12 @@ service.interceptors.response.use(
     if (response) {
       switch (response.status) {
         case 401:
-          // 401: 未授权 (Token 过期或无效)
           ElMessage.error('登录状态已过期，请重新登录')
-          // 清除本地 Token
           localStorage.removeItem('token')
-          // 强制跳转回登录页
-          router.push('/login')
+          
+          // ✅ 修改这里：使用原生 BOM 对象跳转
+          // 这不仅解决了循环依赖，还能强制刷新页面，清除所有内存状态，更安全
+          window.location.href = '/login'
           break
         case 403:
           ElMessage.error('拒绝访问')
