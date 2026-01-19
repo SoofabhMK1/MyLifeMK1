@@ -11,6 +11,7 @@ if sys.platform == "win32":
 from pathlib import Path
 # 将 backend 目录加入 python 路径，否则找不到 models
 sys.path.append(str(Path(__file__).resolve().parents[1]))
+from database import DATABASE_URL
 
 from models import Base  # 导入你的模型基类
 target_metadata = Base.metadata
@@ -20,6 +21,7 @@ from alembic import context
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
