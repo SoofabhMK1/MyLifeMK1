@@ -4,6 +4,10 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from database import get_db, engine, Base
+from models import Hero
 
 # 1. 加载环境变量
 # 获取当前文件(main.py)的父目录的父目录，也就是项目根目录
@@ -49,12 +53,66 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     # 登录成功，返回 token (这里演示返回简单的 bearer token)
     return {"access_token": form_data.username, "token_type": "bearer"}
 
-# 4. 一个受保护的测试接口（可选，用于测试登录后获取数据）
+@app.on_event("startup")
+async def startup_event():
+    # 这里的逻辑是：如果数据库里没有主角，就创建一个默认的
+    async with engine.begin() as conn:
+        # 生产环境通常不在这里创建表，而是靠 alembic，但开发环境为了保险可以留着
+        # await conn.run_sync(Base.metadata.create_all) 
+        pass
+
+    async with AsyncSession(engine) as session:
+        result = await session.execute(select(Hero))
+        hero = result.scalars().first()
+        if not hero:
+            print("Creating default hero...")
+            default_hero = Hero(
+                name="ShadowSlayer",
+                title="系统管理员",
+                level=1,
+                exp=0,
+                cash=1000.0,
+                avatar_url="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+                # JSON 数据直接存字典
+                attributes=[
+                    {"label": "力量 (STR)", "value": 10, "color": "#f56c6c"},
+                    {"label": "智力 (INT)", "value": 10, "color": "#409eff"}
+                ],
+                skills=[
+                    {"name": "Python 基础", "level": "Lv.1", "type": "info"}
+                ]
+            )
+            session.add(default_hero)
+            await session.commit()
+
+# 修改：获取用户信息的接口
 @app.get("/users/me")
-async def read_users_me(token: str = Depends(oauth2_scheme)):
-    return {"user": token, "message": "欢迎进入主页！"}
+async def read_users_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
+    # 1. 查询数据库里的第一个 Hero
+    result = await db.execute(select(Hero))
+    hero = result.scalars().first()
+    
+    if not hero:
+        return {"error": "No hero found"}
+    
+    # 2. 返回数据
+    return {
+        "username": hero.name,
+        "title": hero.title,
+        "level": hero.level,
+        "exp": hero.exp,
+        "avatarUrl": hero.avatar_url,
+        "cash": hero.cash,
+        "attributes": hero.attributes, # 数据库会自动把 JSON 转回 Python List/Dict
+        "skills": hero.skills
+    }
 
 if __name__ == "__main__":
     import uvicorn
     # 启动服务，端口 8000
+    import sys
+    import asyncio
+
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     uvicorn.run(app, host="0.0.0.0", port=8000)

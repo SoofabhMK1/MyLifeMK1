@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user'
+import request from '../utils/request'
+import { useRouter } from 'vue-router' 
 import { User, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const loginForm = reactive({
   username: '',
@@ -26,20 +28,15 @@ const handleLogin = async () => {
   formData.append('username', loginForm.username)
   formData.append('password', loginForm.password)
 
-  try {
-    // const response = await axios.post('http://localhost:8000/token', formData)
-    const response = await axios.post('/api/token', formData)
-    const token = response.data.access_token
-    const tokenType = response.data.token_type
-    localStorage.setItem('token', `${tokenType} ${token}`)
-    
+  const success = await userStore.login(formData)
+  
+  if (success) {
     ElMessage.success('登录成功')
     router.push('/')
-  } catch (error: any) {
-    ElMessage.error('登录失败，请检查账号密码')
-  } finally {
-    isLoading.value = false
-  }
+  } 
+  // 失败的提示已经在 request 拦截器或 store 里处理了，这里不用管，或者简单打印
+
+  isLoading.value = false
 }
 </script>
 
