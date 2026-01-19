@@ -7,15 +7,19 @@ import {
   SwitchButton, 
   Setting, 
   Monitor, 
-  Bell 
+  Bell,
+  HomeFilled
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const userStore = useUserStore()
 
+const goHome = () => {
+  router.push('/')
+}
 // 处理设置点击
 const handleSettings = () => {
-  ElMessage.info('正在访问系统核心设置... (功能开发中)')
+  router.push('/settings')
 }
 
 // 处理退出登录
@@ -41,7 +45,7 @@ const handleLogout = () => {
 <template>
   <div class="navbar-container">
     <!-- 左侧：Logo 和系统名称 -->
-    <div class="nav-left">
+    <div class="nav-left" @click="goHome">
       <div class="logo-box">
         <el-icon :size="22" class="logo-icon"><Monitor /></el-icon>
       </div>
@@ -53,7 +57,13 @@ const handleLogout = () => {
 
     <!-- 右侧：功能按钮区 -->
     <div class="nav-right">
-      <!-- 消息通知 (装饰用) -->
+
+      <el-tooltip content="系统主页" placement="bottom">
+        <div class="icon-btn" @click="goHome">
+          <el-icon :size="20"><HomeFilled /></el-icon>
+        </div>
+      </el-tooltip>
+      <!-- 消息通知 -->
       <el-tooltip content="系统通知" placement="bottom">
         <div class="icon-btn">
           <el-badge is-dot class="item">
@@ -103,6 +113,12 @@ const handleLogout = () => {
 .nav-left {
   display: flex;
   align-items: center;
+  cursor: pointer; 
+  transition: opacity 0.3s;
+}
+
+.nav-left:hover {
+  opacity: 0.8;
 }
 
 .logo-box {

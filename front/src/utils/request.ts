@@ -38,15 +38,20 @@ service.interceptors.response.use(
     const { response } = error
     
     if (response) {
+      const isLoginRequest = response.config.url.includes('/token')
+
       switch (response.status) {
         case 401:
-          ElMessage.error('登录状态已过期，请重新登录')
-          localStorage.removeItem('token')
-          
-          // ✅ 修改这里：使用原生 BOM 对象跳转
-          // 这不仅解决了循环依赖，还能强制刷新页面，清除所有内存状态，更安全
-          window.location.href = '/login'
-          break
+          if (isLoginRequest) {
+            // 如果是登录接口报 401，说明是账号密码错误
+            ElMessage.error('账号或密码错误')
+          } else {
+            // 如果是其他接口报 401，才是真正的 Token 过期
+            ElMessage.error('登录状态已过期，请重新登录')
+            localStorage.removeItem('token')
+            window.location.href = '/login'
+          }
+          break;
         case 403:
           ElMessage.error('拒绝访问')
           break
