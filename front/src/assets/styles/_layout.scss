@@ -1,4 +1,4 @@
-@import './variables';
+@use 'variables' as *;  // 仅在当前文件内部使用
 
 @mixin app-layout {
   min-height: $layout-min-height;
