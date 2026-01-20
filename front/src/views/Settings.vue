@@ -171,11 +171,6 @@ const handleSaveSystem = () => ElMessage.success('系统偏好已更新')
     <Navbar />
 
     <div class="dashboard-content">
-      <div class="page-header">
-        <h2 class="header-title">系统控制台 (SETTINGS)</h2>
-        <span class="header-subtitle">管理外部神经连接与核心参数</span>
-      </div>
-
       <el-row :gutter="20">
         
         <!-- 左侧：API 设定 -->
@@ -345,35 +340,13 @@ const handleSaveSystem = () => ElMessage.success('系统偏好已更新')
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .app-layout {
-  min-height: 100vh;
-  background-color: #f0f2f5;
-  background-image: radial-gradient(#e1e4e8 1px, transparent 1px);
-  background-size: 20px 20px;
+  @include app-layout;
 }
 
 .dashboard-content {
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.page-header {
-  margin-bottom: 25px;
-  padding-left: 5px;
-  border-left: 5px solid #409eff;
-}
-.header-title {
-  margin: 0;
-  font-size: 24px;
-  color: #303133;
-  letter-spacing: 1px;
-}
-.header-subtitle {
-  font-size: 12px;
-  color: #909399;
-  font-family: 'Courier New', Courier, monospace;
+   @include container;
 }
 
 /* 卡片样式 */

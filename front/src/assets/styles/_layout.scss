@@ -1,0 +1,14 @@
+@import './variables';
+
+@mixin app-layout {
+  min-height: $layout-min-height;
+  background-color: $bg-color;
+  background-image: radial-gradient($pattern-color 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@mixin container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 20px;
+}

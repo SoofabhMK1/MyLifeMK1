@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
+import { useNavigationStore } from '@/stores/navigation'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
   SwitchButton, 
@@ -13,6 +14,7 @@ import {
 
 const router = useRouter()
 const userStore = useUserStore()
+const navigationStore = useNavigationStore()
 
 const goHome = () => {
   router.push('/')
@@ -54,28 +56,32 @@ const handleLogout = () => {
         <span class="sub-title">Ver 1.0.0</span>
       </div>
     </div>
-
+    <!-- 中间：页面名称 -->
+    <div class="nav-center">
+      <span class="page-name">{{ navigationStore.currentTitle }}</span>
+    </div>
     <!-- 右侧：功能按钮区 -->
     <div class="nav-right">
 
-      <el-tooltip content="系统主页" placement="bottom">
+      <el-tooltip v-if="navigationStore.shouldShowHome" content="系统主页" placement="bottom">
         <div class="icon-btn" @click="goHome">
           <el-icon :size="20"><HomeFilled /></el-icon>
         </div>
       </el-tooltip>
+      
+      <!-- 设置按钮 -->
+      <el-tooltip v-if="navigationStore.shouldShowSettings" content="系统设置" placement="bottom">
+        <div class="icon-btn" @click="handleSettings">
+          <el-icon :size="20"><Setting /></el-icon>
+        </div>
+      </el-tooltip>
+
       <!-- 消息通知 -->
       <el-tooltip content="系统通知" placement="bottom">
         <div class="icon-btn">
           <el-badge is-dot class="item">
             <el-icon :size="20"><Bell /></el-icon>
           </el-badge>
-        </div>
-      </el-tooltip>
-
-      <!-- 设置按钮 -->
-      <el-tooltip content="系统设置" placement="bottom">
-        <div class="icon-btn" @click="handleSettings">
-          <el-icon :size="20"><Setting /></el-icon>
         </div>
       </el-tooltip>
 
@@ -115,6 +121,7 @@ const handleLogout = () => {
   align-items: center;
   cursor: pointer; 
   transition: opacity 0.3s;
+  min-width: 200px; /* 确保左侧固定宽度 */
 }
 
 .nav-left:hover {
@@ -153,11 +160,30 @@ const handleLogout = () => {
   font-family: 'Courier New', Courier, monospace;
 }
 
+/* 中间页面标题 */
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none; /* 防止阻挡点击事件 */
+}
+
+.page-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+  letter-spacing: 0.5px;
+  /* 添加微妙的发光效果 */
+  text-shadow: 0 0 1px rgba(64, 158, 255, 0.3);
+}
+
 /* 右侧按钮区域 */
 .nav-right {
   display: flex;
   align-items: center;
   gap: 15px;
+  min-width: 200px; /* 确保右侧固定宽度 */
+  justify-content: flex-end; /* 右对齐 */
 }
 
 .icon-btn {

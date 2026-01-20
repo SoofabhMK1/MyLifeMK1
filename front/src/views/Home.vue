@@ -133,20 +133,14 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 /* 4. 修改样式结构 */
 .app-layout {
-  min-height: 100vh;
-  background-color: #f0f2f5;
-  background-image: radial-gradient(#e1e4e8 1px, transparent 1px);
-  background-size: 20px 20px;
+  @include app-layout;
 }
 
-/* 之前叫 .dashboard-container，现在改为 .dashboard-content 并增加 padding */
 .dashboard-content {
-  padding: 20px; 
-  max-width: 1400px; /* 限制最大宽度，防止在大屏幕上拉太长 */
-  margin: 0 auto;    /* 居中 */
+  @include container;
 }
 
 .system-status {
