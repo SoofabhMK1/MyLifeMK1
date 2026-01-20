@@ -1,1 +1,14 @@
 @import './base.css';
+
+.app-layout {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  background-image: radial-gradient(#e1e4e8 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.dashboard-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}

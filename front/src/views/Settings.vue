@@ -340,13 +340,19 @@ const handleSaveSystem = () => ElMessage.success('系统偏好已更新')
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
+
 .app-layout {
-  @include app-layout;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  background-image: radial-gradient(#e1e4e8 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 .dashboard-content {
-   @include container;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 /* 卡片样式 */

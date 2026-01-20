@@ -133,16 +133,9 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
+
 /* 4. 修改样式结构 */
-.app-layout {
-  @include app-layout;
-}
-
-.dashboard-content {
-  @include container;
-}
-
 .system-status {
   color: #67c23a;
   font-size: 12px;
